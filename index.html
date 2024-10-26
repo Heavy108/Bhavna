@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Asm Prediction</title>
+</head>
+<style type="text/css">
+	* {
+		font-size: 1.2rem;
+		font-family: sans-serif;
+	}
+</style>
+<body>
+	<input style="display: block; width: 100%;" type="textarea" id="input" name="prompt">
+	<button id="predict">Predict</button>
+	<p id="output"></p>
+	<script type="text/javascript">
+
+
+		const inputText = document.getElementById("input");
+		const predictBtn = document.getElementById("predict");
+		const outputDiv = document.getElementById("output");
+
+		outputDiv.addEventListener("click", () => {
+			inputText.value = outputDiv.textContent
+		})
+
+predictBtn.addEventListener("click", () => {
+    const input = inputText.value;  // Declare input with const
+    fetch("http://192.168.87.88:4000/models/asm", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            "start_text": input,
+            "max_tokens_count": 10000,
+            "temp": 1.2
+        })
+    })
+    .then(response => response.json())  // Use response.json() with lowercase "j"
+    .then(data => {
+    	predicted = data.text.replace("�", "");
+        outputDiv.textContent = predicted;  // Corrected to outputDiv
+    })
+    .catch(error => {
+        console.error("Error:", error);  // Handle errors
+        outputDiv.textContent = "An error occurred. Please try again.";
+    });
+});
+
+	</script>
+</body>
+</html>
